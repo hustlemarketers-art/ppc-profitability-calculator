@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Compare ROAS with contribution margin and marketing costs. Calculate contribution after marketing and break-even revenue.">
+  <title>PPC Profitability Calculator | Hustle Marketers</title>
+  <style>
+    :root{--ink:#191525;--muted:#665f74;--purple:#6337c6;--line:#e8e1f0;--paper:#fff;--bg:#f7f5fb;--red:#a02b38;--green:#1b6754}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{max-width:1080px;margin:0 auto;padding:36px 24px 48px}header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:20px;gap:12px}
+    .brand{font-weight:750;letter-spacing:-.4px;font-size:20px}.tag{color:var(--muted);font-size:13px}.eyebrow{color:var(--purple);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:12px;margin:38px 0 8px}
+    h1{font-size:clamp(30px,5vw,46px);line-height:1.15;letter-spacing:-1.5px;margin:0 0 15px}h2{font-size:19px;margin:0 0 16px}p{margin:0 0 14px}.intro{max-width:660px;color:var(--muted);margin-bottom:30px}
+    .layout{display:grid;grid-template-columns:340px 1fr;gap:24px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 4px 18px #20133b04}
+    label{display:block;font-size:14px;font-weight:650;margin-bottom:6px}input,select{font:inherit;color:var(--ink);border:1px solid #c6bbd6;border-radius:8px;width:100%;padding:10px 12px;background:var(--paper)}
+    input:focus,select:focus,button:focus-visible{outline:3px solid #bda5f0;outline-offset:2px}small{display:block;color:var(--muted);font-size:12px;line-height:1.5;margin-top:5px}.field{margin-bottom:17px}
+    .buttons{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}button{font:inherit;cursor:pointer;border-radius:8px;padding:10px 14px;font-weight:650;border:1px solid var(--purple)}
+    .primary{background:var(--purple);color:#fff;flex:1}.secondary{background:#fff;color:var(--purple);font-size:13px}.example{font-size:12px;color:var(--muted);margin-top:14px;margin-bottom:0}
+    .error{color:var(--red);font-size:14px;margin-top:15px;min-height:0}.error:empty{display:none}.summary{background:#f1ebfc;padding:20px;border-radius:12px;margin-bottom:22px}.summary p{margin:0;font-size:13px;color:var(--muted)}
+    .summary strong{font-size:35px;letter-spacing:-1px;display:block;margin:4px 0}.summary .state{font-size:13px;font-weight:700;color:var(--purple)}.summary[data-state="negative"] .state{color:var(--red)}.summary[data-state="positive"] .state{color:var(--green)}
+    dl{display:grid;grid-template-columns:1fr 1fr;gap:18px 22px;margin:0}dl div{border-bottom:1px solid var(--line);padding-bottom:12px}dt{font-size:12px;color:var(--muted)}dd{margin:5px 0 0;font-size:23px;font-weight:700;letter-spacing:-.5px}
+    .note{font-size:12px;color:var(--muted);margin-top:22px;margin-bottom:0}details{margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:18px 22px;background:#fff}summary{cursor:pointer;font-weight:650}
+    details p{font-size:14px;margin:14px 0 0;color:var(--muted)}code{background:#f4f0fa;padding:2px 5px;border-radius:3px;color:var(--ink);font-size:12px}
+    footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:28px;color:var(--muted);font-size:12px}a{color:var(--purple);text-decoration-thickness:1px;text-underline-offset:3px}noscript{display:block;color:var(--red);padding:20px}
+    @media(max-width:760px){main{padding:24px 18px}.layout{grid-template-columns:1fr}.panel{padding:22px}header{align-items:flex-start}.tag{max-width:150px;text-align:right}.eyebrow{margin-top:28px}dl{gap:16px}}
+  </style>
+</head>
+<body>
+  <main>
+    <header><div class="brand">Hustle Marketers</div><div class="tag">Practical tools for paid advertising</div></header>
+    <div class="eyebrow">Campaign economics</div>
+    <h1>PPC Profitability Calculator</h1>
+    <p class="intro">See what your reported ROAS leaves after variable costs and marketing spend. Use the same period and currency for every amount.</p>
+    <noscript>Enable JavaScript to use the calculator. The README contains the formulas.</noscript>
+    <div class="layout">
+      <form class="panel" id="calculator" novalidate>
+        <h2>Your campaign figures</h2>
+        <div class="field"><label for="currency">Display currency</label><select id="currency"><option value="USD">USD</option><option value="GBP">GBP</option><option value="EUR">EUR</option><option value="INR">INR</option><option value="AED">AED</option><option value="AUD">AUD</option></select><small>Currency changes display only. Amounts are not converted.</small></div>
+        <div class="field"><label for="revenue">Attributed revenue</label><input id="revenue" name="revenue" type="number" min="0" step="any" inputmode="decimal" value="10000" required aria-describedby="revenue-help"><small id="revenue-help">Revenue recorded for the campaigns you are modeling.</small></div>
+        <div class="field"><label for="adSpend">Ad spend</label><input id="adSpend" name="adSpend" type="number" min="0" step="any" inputmode="decimal" value="2500" required></div>
+        <div class="field"><label for="marginPercent">Contribution margin before marketing (%)</label><input id="marginPercent" name="marginPercent" type="number" min="0" max="100" step="any" inputmode="decimal" value="40" required aria-describedby="margin-help"><small id="margin-help">Revenue left after variable product and fulfillment costs, before marketing.</small></div>
+        <div class="field"><label for="otherMarketingCost">Other marketing costs</label><input id="otherMarketingCost" name="otherMarketingCost" type="number" min="0" step="any" inputmode="decimal" value="500" required aria-describedby="cost-help"><small id="cost-help">Allocated management, creative and other marketing costs. Enter 0 if none.</small></div>
+        <div class="buttons"><button class="primary" type="submit">Calculate</button><button class="secondary" id="clear" type="button">Clear inputs</button></div>
+        <p class="example">The initial values are a fictional example.</p>
+        <p class="error" id="error" role="alert"></p>
+      </form>
+      <section class="panel" aria-labelledby="results-heading">
+        <h2 id="results-heading">Your modeled results</h2>
+        <div id="results" aria-live="polite" aria-atomic="true">
+          <div class="summary" id="summary"><p>Contribution after marketing</p><strong id="contributionAfterMarketing">Not calculated</strong><span class="state" id="status">Enter figures and calculate.</span></div>
+          <dl>
+            <div><dt>ROAS</dt><dd id="roas">Not calculated</dd></div>
+            <div><dt>Break-even ROAS, including other costs</dt><dd id="breakEvenROAS">Not calculated</dd></div>
+            <div><dt>Contribution before marketing</dt><dd id="contributionBeforeMarketing">Not calculated</dd></div>
+            <div><dt>Total marketing cost</dt><dd id="marketingCost">Not calculated</dd></div>
+            <div><dt>Break-even revenue</dt><dd id="breakEvenRevenue">Not calculated</dd></div>
+            <div><dt>Modeled contribution ROI</dt><dd id="contributionROI">Not calculated</dd></div>
+          </dl>
+        </div>
+        <p class="note">This is a contribution model for attributed revenue. It does not establish incremental revenue or causal ROMI, and it does not deduct fixed overhead, taxes or financing costs. Zero denominators are shown as Not defined.</p>
+      </section>
+    </div>
+    <details><summary>Formulas and assumptions</summary>
+      <p>ROAS = revenue / ad spend. Contribution after marketing = revenue × contribution margin − ad spend − other marketing costs. Modeled contribution ROI = contribution after marketing / total marketing cost.</p>
+      <p>Break-even revenue = total marketing cost / contribution margin. Break-even ROAS = total marketing cost / (ad spend × contribution margin). Use a decimal margin in these formulas: 40% becomes 0.40.</p>
+      <p>At a zero margin and positive marketing cost, no finite revenue reaches break-even. At zero margin and zero marketing cost, break-even revenue is zero. The model holds the entered margin and costs fixed; recalculate when you change spend.</p>
+    </details>
+    <footer><span>Built by <a href="https://ishantsharmamarketer.com/">Ishant Sharma</a> at Hustle Marketers. Open source on <a href="https://github.com/hustlemarketers-art/ppc-profitability-calculator">GitHub</a>. Inputs stay in this browser.</span><a href="https://hustlemarketers.com/tools/">Explore marketing tools</a></footer>
+  </main>
+  <script src="metrics.js"></script>
+  <script>
+    'use strict';
+    const fields = ['revenue', 'adSpend', 'marginPercent', 'otherMarketingCost'];
+    const outputIds = ['roas', 'breakEvenROAS', 'contributionBeforeMarketing', 'contributionAfterMarketing', 'marketingCost', 'breakEvenRevenue', 'contributionROI'];
+    const form = document.getElementById('calculator');
+    let hasResults = false;
+    function resetResults(message) {
+      outputIds.forEach(id => { document.getElementById(id).textContent = 'Not calculated'; });
+      document.getElementById('status').textContent = message;
+      document.getElementById('summary').removeAttribute('data-state');
+      hasResults = false;
+    }
+    function showResults() {
+      fields.forEach(id => { document.getElementById(id).removeAttribute('aria-invalid'); });
+      const values = Object.fromEntries(fields.map(id => [id, document.getElementById(id).value]));
+      try {
+        const r = PPCProfitability.calculate(values);
+        const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: document.getElementById('currency').value, maximumFractionDigits: 2 });
+        ['contributionBeforeMarketing', 'contributionAfterMarketing', 'marketingCost', 'breakEvenRevenue'].forEach(id => {
+          document.getElementById(id).textContent = r[id] === null ? 'No finite amount' : money.format(r[id]);
+        });
+        ['roas', 'breakEvenROAS'].forEach(id => { document.getElementById(id).textContent = r[id] === null ? 'Not defined' : r[id].toFixed(2) + 'x'; });
+        document.getElementById('contributionROI').textContent = r.contributionROI === null ? 'Not defined' : (r.contributionROI * 100).toFixed(1) + '%';
+        document.getElementById('status').textContent = ({positive:'Positive contribution after marketing',negative:'Negative contribution after marketing','break-even':'Break-even under the entered assumptions'})[r.status];
+        document.getElementById('summary').setAttribute('data-state', r.status);
+        document.getElementById('error').textContent = '';
+        hasResults = true;
+      } catch (error) {
+        resetResults('Check your inputs.');
+        document.getElementById('error').textContent = error.message;
+        const invalid = fields.find(id => {
+          const el = document.getElementById(id);
+          return el.value.trim() === '' || !el.validity.valid;
+        });
+        if (invalid) { document.getElementById(invalid).setAttribute('aria-invalid', 'true'); document.getElementById(invalid).focus(); }
+      }
+    }
+    form.addEventListener('submit', event => { event.preventDefault(); showResults(); });
+    fields.forEach(id => document.getElementById(id).addEventListener('input', () => {
+      resetResults('Figures changed. Press Calculate.'); document.getElementById('error').textContent = '';
+    }));
+    document.getElementById('currency').addEventListener('change', () => { if (hasResults) showResults(); });
+    document.getElementById('clear').addEventListener('click', () => {
+      fields.forEach(id => { const el = document.getElementById(id); el.value = ''; el.removeAttribute('aria-invalid'); });
+      document.getElementById('error').textContent = ''; resetResults('Enter figures and calculate.'); document.getElementById('revenue').focus();
+    });
+    showResults();
+  </script>
+</body>
+</html>
