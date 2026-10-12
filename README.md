@@ -1,6 +1,10 @@
 # PPC Profitability Calculator: ROAS, Break-Even ROAS and Contribution Margin
 
+[![Tests](https://github.com/hustlemarketers-art/ppc-profitability-calculator/actions/workflows/tests.yml/badge.svg)](https://github.com/hustlemarketers-art/ppc-profitability-calculator/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 **[Open the live calculator](https://hustlemarketers-art.github.io/ppc-profitability-calculator/)**
+
+![PPC Profitability Calculator showing ROAS, break-even ROAS and contribution after marketing](docs/screenshot.png)
 
 A free browser calculator that shows whether your Google Ads, Meta Ads or Microsoft Ads spend is actually profitable once product margin and agency or creative costs are included. It calculates ROAS, break-even ROAS, break-even revenue and contribution after marketing.
 
